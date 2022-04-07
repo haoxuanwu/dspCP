@@ -1,11 +1,40 @@
 Package: dspCP
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Dynamic Shrinkage Process and Changepoints
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Authors@R: c(
+    person("Daniel R.", "Kowal", email = "daniel.kowal@rice.edu", role = "aut"),
+    person("Haoxuan", "Wu", email = "hw399@cornell.edu", role = c("cre","aut")),
+    person("David S.", "Matteson", email = "matteson@cornell.edu", role = "aut"))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-2
 Encoding: UTF-8
-LazyData: true
+LazyData: false
+RoxygenNote: 7.1.2
+Imports: 
+    coda,
+    fda,
+    graphics,
+    grDevices,
+    KFAS,
+    Matrix,
+    MCMCpack,
+    methods,
+    msm,
+    pgdraw,
+    Rcpp,
+    RcppArmadillo,
+    RcppEigen,
+    RcppZiggurat,
+    robustbase,
+    spam,
+    stats,
+    stochvol,
+    truncdist,
+    vars,
+    zoo
+Suggests: 
+    ggplot2
+LinkingTo: 
+    Rcpp, RcppArmadillo, RcppEigen
