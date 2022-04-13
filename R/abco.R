@@ -32,6 +32,7 @@ NULL
 #' \item "yhat" (posterior predictive distribution)
 #' \item "evol_sigma_t2" (evolution error variance)
 #' \item "obs_sigma_t2" (observation error variance)
+#' \item "zeta_sigma_t2" (outlier error variance)
 #' \item "dhs_phi" (DHS AR(1) coefficient)
 #' \item "dhs_mean" (DHS AR(1) unconditional mean)
 #' }

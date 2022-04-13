@@ -59,7 +59,7 @@ dsp_cp = function(y, cp = FALSE, evol_error = 'DHS', D = 1, useObsSV = TRUE, use
                mcmc_params = list("mu", "omega", "r"),
                computeDIC = TRUE,
                verbose = TRUE,
-               cp_thres = 0.5,
+               cp_thres = 0.4,
                return_full_samples = TRUE){
   if(!((evol_error == "DHS") || (evol_error == "HS") || (evol_error == "BL") || (evol_error == "SV") || (evol_error == "NIG"))) stop('Error type must be one of DHS, HS, BL, SV, or NIG')
   if(!((D == 0) || (D == 1) || (D == 2))) stop('D must be 0, 1 or 2')
@@ -74,7 +74,7 @@ dsp_cp = function(y, cp = FALSE, evol_error = 'DHS', D = 1, useObsSV = TRUE, use
         mcmc_params = append(mcmc_params, list('r'))
       }
       mcmc_output = abco(y, D = D, useObsSV = useObsSV, useAnom = useAnom, nsave = nsave,
-                         nburn = nburn, nskip = nskip, mcmc_params = mcmc_params, verbose = verbose)
+                         nburn = nburn, nskip = nskip, mcmc_params = mcmc_params, verbose = verbose, cp_thres = cp_thres)
     }
   } else {
     mcmc_output = btf(y, evol_error = evol_error, D = D, useObsSV = useObsSV, nsave = nsave, nburn = nburn, nskip = nskip,
