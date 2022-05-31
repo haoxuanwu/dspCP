@@ -29,7 +29,7 @@ for the observation error variance}
 
 \item{nsave}{number of MCMC iterations to record}
 
-\item{nburn}{number of MCMC iterations to discard (burin-in)}
+\item{nburn}{number of MCMC iterations to discard (burnin)}
 
 \item{nskip}{number of MCMC iterations to skip between saving iterations,
 i.e., save every (nskip + 1)th draw}
@@ -41,6 +41,7 @@ must be one or more of:
 \item "yhat" (posterior predictive distribution)
 \item "evol_sigma_t2" (evolution error variance)
 \item "obs_sigma_t2" (observation error variance)
+\item "zeta_sigma_t2" (outlier error variance)
 \item "dhs_phi" (DHS AR(1) coefficient)
 \item "dhs_mean" (DHS AR(1) unconditional mean)
 }}

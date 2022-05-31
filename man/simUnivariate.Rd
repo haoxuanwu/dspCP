@@ -21,7 +21,7 @@ a list containing
 \itemize{
 \item the simulated function \code{y}
 \item the true function \code{y_true}
-\item the true observation standard devation \code{sigma_true}
+\item the true observation standard deviation \code{sigma_true}
 }
 }
 \description{

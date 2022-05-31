@@ -17,7 +17,7 @@ dsp_cp(
   mcmc_params = list("mu", "omega", "r"),
   computeDIC = TRUE,
   verbose = TRUE,
-  cp_thres = 0.5,
+  cp_thres = 0.4,
   return_full_samples = TRUE
 )
 }

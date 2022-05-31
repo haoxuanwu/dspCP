@@ -113,7 +113,7 @@ dsp_cp = function(y, cp = FALSE, evol_error = 'DHS', D = 1, useObsSV = TRUE, use
 #' @param useObsSV logical; if TRUE, include a (normal) stochastic volatility model
 #' for the observation error variance
 #' @param nsave number of MCMC iterations to record
-#' @param nburn number of MCMC iterations to discard (burin-in)
+#' @param nburn number of MCMC iterations to discard (burnin)
 #' @param nskip number of MCMC iterations to skip between saving iterations,
 #' i.e., save every (nskip + 1)th draw
 #' @param mcmc_params named list of parameters for which we store the MCMC output;
@@ -142,7 +142,7 @@ dsp_cp = function(y, cp = FALSE, evol_error = 'DHS', D = 1, useObsSV = TRUE, use
 #' simdata = simUnivariate(signalName = "bumps", T = 128, RSNR = 7, include_plot = TRUE)
 #' y = simdata$y
 #'
-#' out = btf(y)
+#' out = btf(y, D=1)
 #' plot_fitted(y, mu = colMeans(out$mu), postY = out$yhat, y_true = simdata$y_true)
 #'
 #' # Example 2: Doppler Data; longer series, more noise
@@ -267,7 +267,7 @@ btf = function(y, evol_error = 'DHS', D = 2, useObsSV = FALSE,
 
     } else {
       # Evolution error variance + params:
-      evolParams = sampleEvolParams(omega, evolParams, sigma_e/sqrt(T), evol_error)
+      evolParams = sampleEvolParams(omega, evolParams, sigma_e/sqrt(T), evol_error, loc)
 
       if(evol_error == 'DHS') {
         sigma_e = uni.slice(sigma_e, g = function(x){
@@ -360,7 +360,7 @@ btf = function(y, evol_error = 'DHS', D = 2, useObsSV = FALSE,
 #' @param useObsSV logical; if TRUE, include a (normal) stochastic volatility model
 #' for the observation error variance
 #' @param nsave number of MCMC iterations to record
-#' @param nburn number of MCMC iterations to discard (burin-in)
+#' @param nburn number of MCMC iterations to discard (burnin)
 #' @param nskip number of MCMC iterations to skip between saving iterations,
 #' i.e., save every (nskip + 1)th draw
 #' @param mcmc_params named list of parameters for which we store the MCMC output;

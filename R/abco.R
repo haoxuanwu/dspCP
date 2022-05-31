@@ -22,7 +22,7 @@ NULL
 #' for the observation error variance
 #' @param useAnom logical; if TRUE, include an anomaly component in the observation equation
 #' @param nsave number of MCMC iterations to record
-#' @param nburn number of MCMC iterations to discard (burin-in)
+#' @param nburn number of MCMC iterations to discard (burnin)
 #' @param nskip number of MCMC iterations to skip between saving iterations,
 #' i.e., save every (nskip + 1)th draw
 #' @param mcmc_params named list of parameters for which we store the MCMC output;
@@ -299,13 +299,13 @@ t_sampleBTF = function(y, obs_sigma_t2, evol_sigma_t2, D = 1, loc_obs){
       diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(1/evol_sigma_t2[-1], 0)
       diag2 = -1/evol_sigma_t2[-1]
       rd = zrnorm(T)
-      mu = sample_mat(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2), length(diag1), length(loc_obs$r), c(linht), rd, D)
+      mu = sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2), length(diag1), length(loc_obs$r), c(linht), rd, D)
     } else {
       diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(0, 4/evol_sigma_t2[-(1:2)], 0) + c(1/evol_sigma_t2[-(1:2)], 0, 0)
       diag2 = c(-2/evol_sigma_t2[3], -2*(1/evol_sigma_t2[-(1:2)] + c(1/evol_sigma_t2[-(1:3)],0)))
       diag3 = 1/evol_sigma_t2[-(1:2)]
       rd = zrnorm(T)
-      mu = sample_mat(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2, diag3, diag3), length(diag1), length(loc_obs$r), c(linht), rd, D)
+      mu = sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2, diag3, diag3), length(diag1), length(loc_obs$r), c(linht), rd, D)
     }
   }
 
@@ -315,7 +315,7 @@ t_sampleBTF = function(y, obs_sigma_t2, evol_sigma_t2, D = 1, loc_obs){
 #----------------------------------------------------------------------------
 #' Sample the thresholded dynamic shrinkage process parameters
 #'
-#' Compute one draw for each of the parameters in the threesholded dynamic shrinkage process
+#' Compute one draw for each of the parameters in the thresholded dynamic shrinkage process
 #' for the special case in which the shrinkage parameter \code{kappa ~ Beta(alpha, beta)}
 #' with \code{alpha = beta = 1/2}.
 #'
@@ -326,7 +326,7 @@ t_sampleBTF = function(y, obs_sigma_t2, evol_sigma_t2, D = 1, loc_obs){
 #' @param upper_b the upper bound in the uniform prior of the threshold variable
 #' @param lower_b the lower bound in the uniform prior of the threshold variable
 #' @param loc list of the row and column indices to fill in a band-sparse matrix
-#' @param prior_dhs_phi the parameters of the prior for the log-volatilty AR(1) coefficient \code{dhs_phi};
+#' @param prior_dhs_phi the parameters of the prior for the log-volatility AR(1) coefficient \code{dhs_phi};
 #' either \code{NULL} for uniform on [-1,1] or a 2-dimensional vector of (shape1, shape2) for a Beta prior
 #' on \code{[(dhs_phi + 1)/2]}
 #' @param alphaPlusBeta For the symmetric prior kappa ~ Beta(alpha, beta) with alpha=beta,
@@ -483,7 +483,7 @@ t_sampleLogVols = function(h_y, h_prev, h_mu, h_phi, h_phi2, h_sigma_eta_t, h_si
   # Sample the log-vols:
   #hsamp = h_mu_all + matrix(Matrix::solve(chQht_Matrix,Matrix::solve(Matrix::t(chQht_Matrix), linht) + rnorm(length(linht))), nr = n)
   rd = zrnorm(length(linht))
-  hsamp = h_mu + sample_mat(loc$r, loc$c, c(Q_diag, Q_off, Q_off), length(Q_diag), length(loc$r), c(linht), rd, 1)
+  hsamp = h_mu + sample_mat_c(loc$r, loc$c, c(Q_diag, Q_off, Q_off), length(Q_diag), length(loc$r), c(linht), rd, 1)
 
   # Return the (uncentered) log-vols
   hsamp
@@ -502,7 +502,7 @@ t_sampleLogVols = function(h_y, h_prev, h_mu, h_phi, h_phi2, h_sigma_eta_t, h_si
 #' @param h_phi2 the \code{1} vector of previous penalty coefficient(s)
 #' @param h_sigma_eta_t the \code{T} vector of log-vol innovation standard deviations
 #' @param h_st the \code{T} vector of indicators on whether each time-step exceed the estimated threshold
-#' @param prior_dhs_phi the parameters of the prior for the log-volatilty AR(1) coefficient \code{dhs_phi};
+#' @param prior_dhs_phi the parameters of the prior for the log-volatility AR(1) coefficient \code{dhs_phi};
 #' either \code{NULL} for uniform on [-1,1] or a 2-dimensional vector of (shape1, shape2) for a Beta prior
 #' on \code{[(dhs_phi + 1)/2]}
 #'
@@ -681,6 +681,7 @@ t_initEvolParams_no = function(y, D, omega){
 #' @param omega \code{T} vector of errors
 #' @return List of relevant components: \code{sigma_wt}, the \code{T} vector of standard deviations,
 #' and additional parameters (unconditional mean, AR(1) coefficient, and standard deviation).
+#' @importFrom methods is
 t_initSV = function(omega){
 
   # Make sure omega is (n x p) matrix
@@ -691,7 +692,7 @@ t_initSV = function(omega){
 
   # AR(1) pararmeters: check for error in initialization too
   ar_fit = try(arima(ht, c(1,0,0)), silent = TRUE)
-  if(class(ar_fit) != "try-error") {
+  if(is(ar_fit, "try-error")) {
     params = c(ar_fit$coef[2], ar_fit$coef[1], sqrt(ar_fit$sigma2))
   } else params = c(mean(ht)/(1 - 0.8),0.8, 1)
   svParams = params
@@ -754,6 +755,8 @@ t_sampleSVparams = function(omega, svParams){
 #' \item the row indices \code{r} and
 #' \item the column indices \code{c}
 #' }
+#'
+#' @export
 t_create_loc <- function(len, D){
   if (D == 0 || D == 1){
     row_ind = c()

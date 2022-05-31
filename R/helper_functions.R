@@ -14,7 +14,7 @@
 #' \itemize{
 #' \item the simulated function \code{y}
 #' \item the true function \code{y_true}
-#' \item the true observation standard devation \code{sigma_true}
+#' \item the true observation standard deviation \code{sigma_true}
 #' }
 #'
 #' @note The root-signal-to-noise ratio is defined as RSNR = [sd of true function]/[sd of noise].
@@ -66,7 +66,7 @@ simUnivariate = function(signalName = "bumps", T = 200, RSNR = 10, include_plot 
 #' \item the simulated predictors \code{X}
 #' \item the simulated dynamic regression coefficients \code{beta_true}
 #' \item the true function \code{y_true}
-#' \item the true observation standard devation \code{sigma_true}
+#' \item the true observation standard deviation \code{sigma_true}
 #' }
 #'
 #'
@@ -145,7 +145,7 @@ simRegression = function(T = 200, p = 20, p_0 = 15,
 #' \item the simulated predictors \code{X}
 #' \item the simulated dynamic regression coefficients \code{beta_true}
 #' \item the true function \code{y_true}
-#' \item the true observation standard devation \code{sigma_true}
+#' \item the true observation standard deviation \code{sigma_true}
 #' }
 #'
 #' @note The number of predictors is \code{p = length(signalNames) + p_0}.
@@ -239,7 +239,7 @@ initEvolParams = function(omega, evol_error = "DHS"){
 #' the \code{T x p} log-vol innovation SD \code{sigma_eta_t} from the PG priors,
 #' the \code{p x 1} initial log-vol SD \code{sigma_eta_0},
 #' and the mean of log-vol means \code{dhs_mean0} (relevant when \code{p > 1})
-#' @export
+#' @importFrom methods is
 initDHS = function(omega){
 
   # "Local" number of time points
@@ -251,7 +251,12 @@ initDHS = function(omega){
 
   # Initialize the AR(1) model to obtain unconditional mean and AR(1) coefficient
   arCoefs = apply(ht, 2, function(x){
-    params = try(arima(x, c(1,0,0))$coef, silent = TRUE); if(class(params) == "try-error") params = c(0.8, mean(x)/(1 - 0.8))
+    params = try(arima(x, c(1,0,0)), silent = TRUE)
+    if(is(params, "try-error")){
+      params = params$coef
+    } else{
+      params = c(0.8, mean(x)/(1 - 0.8))
+    }
     params
   })
   dhs_mean = arCoefs[2,]; dhs_phi = arCoefs[1,]; dhs_mean0 = mean(dhs_mean)
@@ -274,7 +279,7 @@ initDHS = function(omega){
 #' @param omega \code{T x p} matrix of errors
 #' @return List of relevant components: \code{sigma_wt}, the \code{T x p} matrix of standard deviations,
 #' and additional parameters (unconditional mean, AR(1) coefficient, and standard deviation).
-#' @export
+#' @importFrom methods is
 initSV = function(omega){
 
   # Make sure omega is (n x p) matrix
@@ -286,7 +291,7 @@ initSV = function(omega){
   # AR(1) pararmeters: check for error in initialization too
   svParams = apply(ht, 2, function(x){
     ar_fit = try(arima(x, c(1,0,0)), silent = TRUE)
-    if(class(ar_fit) != "try-error") {
+    if(is(ar_fit, "try-error")) {
       params = c(ar_fit$coef[2], ar_fit$coef[1], sqrt(ar_fit$sigma2))
     } else params = c(mean(x)/(1 - 0.8),0.8, 1)
     params
@@ -301,10 +306,10 @@ initSV = function(omega){
 #' The initial state SDs are assumed to follow half-Cauchy priors, C+(0,A),
 #' where the SDs may be common or distinct among the states.
 #'
-#' This function initalizes the parameters for a PX-Gibbs sampler.
+#' This function initializes the parameters for a PX-Gibbs sampler.
 #'
 #' @param mu0 \code{p x 1} vector of initial values (undifferenced)
-#' @param commonSD logical; if TRUE, use common SDs (otherwise distict)
+#' @param commonSD logical; if TRUE, use common SDs (otherwise distinct)
 #' @return List of relevant components:
 #' the \code{p x 1} evolution error SD \code{sigma_w0},
 #' the \code{p x 1} parameter-expanded RV's \code{px_sigma_w0},
@@ -315,7 +320,7 @@ initEvol0 = function(mu0, commonSD = TRUE){
 
   p = length(mu0)
 
-  # Common or distict:
+  # Common or distinct:
   if(commonSD) {
     sigma_w0 = rep(mean(abs(mu0)), p)
   } else  sigma_w0 = abs(mu0)
@@ -1116,7 +1121,7 @@ getARpXmat = function(y, p = 1, include_intercept = FALSE){
 #----------------------------------------------------------------------------
 #' Identify changepoints from the output of ABCO
 #'
-#' @param D the degree of differencing for changepoint, \code{D=1}
+#' @param D the degree of differencing for changepoint
 #' @param mcmc_output MCMC outputs from ABCO, needs "omega" and "r"
 #' @param cp_thres Percentage of posterior samples needed to declare a changepoint
 identify_cp = function(D, mcmc_output, cp_thres= 0.5){
@@ -1132,3 +1137,22 @@ identify_cp = function(D, mcmc_output, cp_thres= 0.5){
   which(cp_list >= cp_thres)
 }
 NULL
+#----------------------------------------------------------------------------
+#' Wrapper function for C++ call for sample mat, check pre-conditions to prevent crash
+#'
+#' @param row_ind list of the row indices to fill in the bandsparse matrix
+#' @param col_ind list of the columns indices to fill in the bandsparse matrix
+#' @param mat_val list of the values to fill in the bandsparse matrix
+#' @param mat_l dimension of the band-sparse matrix
+#' @param num_inp number of non-zero elements in the bandsparse matrix
+#' @param linht \code{T-D} vector of linear term in the sampler
+#' @param rd \code{T-D} vector of standard normal noise samples
+#' @param D the degree of differencing for changepoint
+sample_mat_c = function(row_ind, col_ind, mat_val, mat_l, num_inp, linht, rd, D){
+  if ((length(row_ind) != num_inp) || (length(col_ind) != num_inp) || (length(mat_val) != num_inp)) stop('Length of inputs do not match')
+  if ((length(linht) != mat_l) || (length(rd) != mat_l)) stop('length of vectors do not match')
+
+  output = sample_mat(row_ind, col_ind, mat_val, mat_l, num_inp, linht, rd, D)
+
+  output
+}

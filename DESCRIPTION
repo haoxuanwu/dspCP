@@ -1,40 +1,42 @@
-Package: dspCP
 Type: Package
-Title: Dynamic Shrinkage Process and Changepoints
+Package: dspCP
+Title: Dynamic Shrinkage Process and Change Points Detection
 Version: 0.1.0
 Authors@R: c(
-    person("Daniel R.", "Kowal", email = "daniel.kowal@rice.edu", role = "aut"),
-    person("Haoxuan", "Wu", email = "hw399@cornell.edu", role = c("cre","aut")),
-    person("David S.", "Matteson", email = "matteson@cornell.edu", role = "aut"))
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+    person("Daniel R.", "Kowal", , "daniel.kowal@rice.edu", role = "aut"),
+    person("Haoxuan", "Wu", , "hw399@cornell.edu", role = c("cre", "aut")),
+    person("David S.", "Matteson", , "matteson@cornell.edu", role = "aut")
+  )
+Description: Implements methods for modeling and detecting change points
+    in time series data using a Bayesian state-space approach with dynamic
+    shrinkage.  The model utilizes a autoregressive stochastic volatility
+    process within a time-varying parameter model to estimate smoothly
+    varying trends with large, isolated interruptions. Change points are
+    estimated using a threshold parameter.  The model can deal with
+    heteroscedastic measurement error, and jointly identifies both local
+    outliers and change points.
 License: GPL-2
-Encoding: UTF-8
-LazyData: false
-RoxygenNote: 7.1.2
 Imports: 
     coda,
-    fda,
     graphics,
     grDevices,
-    KFAS,
     Matrix,
     MCMCpack,
     methods,
     msm,
     pgdraw,
     Rcpp,
-    RcppArmadillo,
-    RcppEigen,
     RcppZiggurat,
-    robustbase,
     spam,
     stats,
     stochvol,
-    truncdist,
-    vars,
-    zoo
+    truncdist
 Suggests: 
     ggplot2
 LinkingTo: 
-    Rcpp, RcppArmadillo, RcppEigen
+    Rcpp,
+    RcppArmadillo,
+    RcppEigen
+Encoding: UTF-8
+LazyData: false
+RoxygenNote: 7.1.2

@@ -7,7 +7,7 @@
 identify_cp(D, mcmc_output, cp_thres = 0.5)
 }
 \arguments{
-\item{D}{the degree of differencing for changepoint, \code{D=1}}
+\item{D}{the degree of differencing for changepoint}
 
 \item{mcmc_output}{MCMC outputs from ABCO, needs "omega" and "r"}
 

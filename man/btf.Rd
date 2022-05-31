@@ -31,7 +31,7 @@ for the observation error variance}
 
 \item{nsave}{number of MCMC iterations to record}
 
-\item{nburn}{number of MCMC iterations to discard (burin-in)}
+\item{nburn}{number of MCMC iterations to discard (burnin)}
 
 \item{nskip}{number of MCMC iterations to skip between saving iterations,
 i.e., save every (nskip + 1)th draw}
@@ -81,7 +81,7 @@ deviation is recommended to avoid numerical issues.
 simdata = simUnivariate(signalName = "bumps", T = 128, RSNR = 7, include_plot = TRUE)
 y = simdata$y
 
-out = btf(y)
+out = btf(y, D=1)
 plot_fitted(y, mu = colMeans(out$mu), postY = out$yhat, y_true = simdata$y_true)
 
 # Example 2: Doppler Data; longer series, more noise

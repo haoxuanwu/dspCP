@@ -72,13 +72,13 @@
                 y
               },
               linear=2.*x-1.,
-              quadratic=4.*(1.-x)*x,
-              cubic=64.*x*(x-1.)*(x-.5)/3.,
+              quadratic=4. * (1. - x) * x,
+              cubic=64. * x * (x - 1.) * (x - .5) / 3.,
               stop("Unknown signal name.  Allowable names are:\n",
-                   paste(.wave.demo.signals, collapse=", ")))
+                   paste(.wave.demo.signals, collapse = ", ")))
 
   if (snr > 0)
-    z <- z + rnorm(n)*sqrt(var(z))/snr
+    z <- z + rnorm(n) * sqrt(var(z)) / snr
 
   z
 }

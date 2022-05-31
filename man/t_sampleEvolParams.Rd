@@ -31,7 +31,7 @@ t_sampleEvolParams(
 
 \item{loc}{list of the row and column indices to fill in a band-sparse matrix}
 
-\item{prior_dhs_phi}{the parameters of the prior for the log-volatilty AR(1) coefficient \code{dhs_phi};
+\item{prior_dhs_phi}{the parameters of the prior for the log-volatility AR(1) coefficient \code{dhs_phi};
 either \code{NULL} for uniform on [-1,1] or a 2-dimensional vector of (shape1, shape2) for a Beta prior
 on \code{[(dhs_phi + 1)/2]}}
 
@@ -52,7 +52,7 @@ List of relevant components:
 }
 }
 \description{
-Compute one draw for each of the parameters in the threesholded dynamic shrinkage process
+Compute one draw for each of the parameters in the thresholded dynamic shrinkage process
 for the special case in which the shrinkage parameter \code{kappa ~ Beta(alpha, beta)}
 with \code{alpha = beta = 1/2}.
 }

@@ -80,13 +80,13 @@ sampleBTF = function(y, obs_sigma_t2, evol_sigma_t2, D = 1, loc_obs = NULL, chol
         diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(1/evol_sigma_t2[-1], 0)
         diag2 = -1/evol_sigma_t2[-1]
         rd = zrnorm(T)
-        mu = as.matrix(sample_mat(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2), length(diag1), length(loc_obs$r), c(linht), rd, D))
+        mu = as.matrix(sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2), length(diag1), length(loc_obs$r), c(linht), rd, D))
       } else {
         diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(0, 4/evol_sigma_t2[-(1:2)], 0) + c(1/evol_sigma_t2[-(1:2)], 0, 0)
         diag2 = c(-2/evol_sigma_t2[3], -2*(1/evol_sigma_t2[-(1:2)] + c(1/evol_sigma_t2[-(1:3)],0)))
         diag3 = 1/evol_sigma_t2[-(1:2)]
         rd = zrnorm(T)
-        mu = as.matrix(sample_mat(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2, diag3, diag3), length(diag1), length(loc_obs$r), c(linht), rd, D))
+        mu = as.matrix(sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2, diag3, diag3), length(diag1), length(loc_obs$r), c(linht), rd, D))
       }
     }
   }
@@ -391,7 +391,7 @@ sampleBTF_reg_backfit = function(y, X, beta, obs_sigma_t2, evol_sigma_t2, D = 1)
 #' @param X the \code{T x p} basis matrix
 #' @param obs_sigma2 the scalar observation error variance
 #' @param evol_sigma_t2 the \code{p x 1} vector of evolution error variances
-#' @param XtX_bands list with 4 vectors consistint of the 4-bands of XtX = crossprod(X) (one-time cost)
+#' @param XtX_bands list with 4 vectors consisting of the 4-bands of XtX = crossprod(X) (one-time cost)
 #' @param Xty the \code{p x 1} matrix crossprod(X,y), which is a one-time cost (assuming no missing entries in y)
 #' @param D the degree of differencing (zero, one, or two)
 #' @return \code{p x 1} vector of simulated basis coefficients \code{beta}
@@ -546,7 +546,7 @@ sampleLogVols = function(h_y, h_prev, h_mu, h_phi, h_sigma_eta_t, h_sigma_eta_0,
   #hsamp = h_mu_all + matrix(Matrix::solve(chQht_Matrix,Matrix::solve(Matrix::t(chQht_Matrix), linht) + rnorm(length(linht))), nrow = n)
   #hsamp = h_mu_all +matrix(rmvnorm.canonical(n = 1, b = linht, Q = QHt_Matrix, Rstruct = cholDSP0))
   rd = zrnorm(length(linht))
-  hsamp = h_mu_all + matrix(sample_mat(loc$r, loc$c, c(Q_diag, Q_off, Q_off), length(Q_diag), length(loc$r), c(linht), rd, 1), nrow=n)
+  hsamp = h_mu_all + matrix(sample_mat_c(loc$r, loc$c, c(Q_diag, Q_off, Q_off), length(Q_diag), length(loc$r), c(linht), rd, 1), nrow=n)
 
   # Return the (uncentered) log-vols
   hsamp
@@ -648,7 +648,7 @@ sampleEvolParams = function(omega, evolParams,  sigma_e = 1, evol_error = "DHS",
 #' @param evolParams list of parameters to be updated (see Value below)
 #' @param sigma_e the observation error standard deviation; for (optional) scaling purposes
 #' @param loc list of the row and column indices to fill in a band-sparse matrix
-#' @param prior_dhs_phi the parameters of the prior for the log-volatilty AR(1) coefficient \code{dhs_phi};
+#' @param prior_dhs_phi the parameters of the prior for the log-volatility AR(1) coefficient \code{dhs_phi};
 #' either \code{NULL} for uniform on [-1,1] or a 2-dimensional vector of (shape1, shape2) for a Beta prior
 #' on \code{[(dhs_phi + 1)/2]}
 #' @param alphaPlusBeta For the symmetric prior kappa ~ Beta(alpha, beta) with alpha=beta,
@@ -820,7 +820,7 @@ sampleSVparams0 = function(omega, svParams){
 #' (i.e., the log-vols minus the unconditional means \code{dhs_mean})
 #' @param h_phi the \code{p x 1} vector of previous AR(1) coefficient(s)
 #' @param h_sigma_eta_t the \code{T x p} matrix of log-vol innovation standard deviations
-#' @param prior_dhs_phi the parameters of the prior for the log-volatilty AR(1) coefficient \code{dhs_phi};
+#' @param prior_dhs_phi the parameters of the prior for the log-volatility AR(1) coefficient \code{dhs_phi};
 #' either \code{NULL} for uniform on [-1,1] or a 2-dimensional vector of (shape1, shape2) for a Beta prior
 #' on \code{[(dhs_phi + 1)/2]}
 #'
@@ -984,7 +984,7 @@ sampleEvol0 = function(mu0, evolParams0, commonSD = FALSE, A = 1){
     # (Distinct) standard deviations:
     evolParams0$sigma_w0 = 1/sqrt(rgamma(n = p, shape = 1/2 + 1/2, rate = mu02/2 + evolParams0$px_sigma_w0))
 
-    # (Distict) paramater expansion:
+    # (Distinct) paramater expansion:
     #evolParams0$px_sigma_w0 = rgamma(n = p, shape = 1/2 + 1/2, rate = 1/evolParams0$sigma_w0^2 + 1/A^2)
     evolParams0$px_sigma_w0 = rgamma(n = p, shape = 1/2 + 1/2, rate = 1/evolParams0$sigma_w0^2 + 1/evolParams0$sigma_00^2)
 
