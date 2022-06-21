@@ -92,3 +92,39 @@ The data \code{y} may contain NAs, which will be treated with a simple imputatio
 via an additional Gibbs sampling step. In general, rescaling \code{y} to have unit standard
 deviation is recommended to avoid numerical issues.
 }
+\examples{
+\dontrun{
+# Example 1: Change in mean with stochastic volatility
+signal = c(rep(0, 50), rep(10, 50))
+noise = rep(1, 100)
+noise_var = rep(1, 100)
+for (k in 2:100){
+  noise_var[k] = exp(0.9*log(noise_var[k-1]) + rnorm(1, 0, 0.5))
+  noise[k] = rnorm(1, 0, sqrt(noise_var[k])) }
+
+y = signal + noise
+mcmc_output = dsp_cp(y, cp=TRUE, mcmc_params = list('yhat', 'mu', "omega", "r"))
+cp = mcmc_output$cp
+print(paste0('Changepoint Locations: ', cp))
+plot_fitted(y, mu = colMeans(mcmc_output$mu), postY = mcmc_output$yhat, y_true = signal)
+
+# Example 2: Change in mean with Outliers
+signal = c(rep(0, 100), rep(5, 100))
+y = c(rep(0, 100), rep(5, 100)) + rnorm(200)
+y[50] = 10
+y[150] = -10
+
+mcmc_output = dsp_cp(y, cp=TRUE, useAnom = TRUE, mcmc_params = list('yhat', 'mu', "omega", "r"))
+cp = mcmc_output$cp
+plot_fitted(y, mu = colMeans(mcmc_output$mu), postY = mcmc_output$yhat, y_true = signal)
+
+# Example 3: Change in linear trend
+signal = c(seq(1, 50), seq(51, 2))
+y = c(seq(1, 50), seq(51, 2)) + rnorm(100)
+
+mcmc_output = dsp_cp(y, cp=TRUE, D=2, mcmc_params = list('yhat', 'mu', "omega", "r"))
+cp = mcmc_output$cp
+plot_fitted(y, mu = colMeans(mcmc_output$mu), postY = mcmc_output$yhat, y_true = signal)
+}
+
+}
