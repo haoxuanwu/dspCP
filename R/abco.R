@@ -509,6 +509,7 @@ t_sampleLogVols = function(h_y, h_prev, h_mu, h_phi, h_phi2, h_sigma_eta_t, h_si
 #' @return \code{2} vector of sampled TAR(1) coefficient(s)
 #'
 #' @import truncdist
+#' @export
 t_sampleAR1 = function(h_yc, h_phi, h_phi2, h_sigma_eta_t, h_st, prior_dhs_phi = NULL){
 
   # Compute dimensions:
