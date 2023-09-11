@@ -144,7 +144,7 @@ dsp_cp = function(y, cp = FALSE, evol_error = 'DHS', D = 1, useObsSV = TRUE, use
 
 #' @param y the \code{T x 1} vector of time series observations
 #' @param evol_error the evolution error distribution; must be one of
-#' 'DHS' (dynamic horseshoe prior), 'HS' (horseshoe prior), 'BL' (Bayesian lasso), or 'NIG' (normal-inverse-gamma prior)
+#' 'DHS' (dynamic horseshoe prior; the default), 'HS' (horseshoe prior), 'BL' (Bayesian lasso), or 'NIG' (normal-inverse-gamma prior)
 #' @param D degree of differencing (D = 0, D = 1, or D = 2)
 #' @param useObsSV logical; if TRUE, include a (normal) stochastic volatility model
 #' for the observation error variance
