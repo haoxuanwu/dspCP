@@ -561,6 +561,7 @@ t_sampleAR1 = function(h_yc, h_phi, h_phi2, h_sigma_eta_t, h_st, prior_dhs_phi =
 #' @return the sampled mean(s) \code{dhs_mean}
 #'
 #' @import pgdraw
+#' @export
 t_sampleLogVolMu = function(h, h_mu, h_phi, h_phi2, h_sigma_eta_t, h_sigma_eta_0, h_st, h_log_scale = 0){
 
   # Compute "local" dimensions:
