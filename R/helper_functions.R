@@ -733,7 +733,10 @@ simBaS = function(sampFuns){
 #' @param timer0 Initial timer value, returned from \code{proc.time()[3]}
 #' @param nsims Total number of simulations
 #' @param nrep Print the estimated time remaining every \code{nrep} iterations
+#'
 #' @return Table of summary statistics using the function \code{summary}
+#'
+#' @export
 computeTimeRemaining = function(nsi, timer0, nsims, nrep=1000){
 
   # Only print occasionally:
