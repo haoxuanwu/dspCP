@@ -1148,6 +1148,8 @@ NULL
 #' @param linht \code{T-D} vector of linear term in the sampler
 #' @param rd \code{T-D} vector of standard normal noise samples
 #' @param D the degree of differencing for changepoint
+#'
+#' @export
 sample_mat_c = function(row_ind, col_ind, mat_val, mat_l, num_inp, linht, rd, D){
   if ((length(row_ind) != num_inp) || (length(col_ind) != num_inp) || (length(mat_val) != num_inp)) stop('Length of inputs do not match')
   if ((length(linht) != mat_l) || (length(rd) != mat_l)) stop('length of vectors do not match')

@@ -298,13 +298,13 @@ t_sampleBTF = function(y, obs_sigma_t2, evol_sigma_t2, D = 1, loc_obs){
     if (D == 1) {
       diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(1/evol_sigma_t2[-1], 0)
       diag2 = -1/evol_sigma_t2[-1]
-      rd = zrnorm(T)
+      rd = RcppZiggurat::zrnorm(T)
       mu = sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2), length(diag1), length(loc_obs$r), c(linht), rd, D)
     } else {
       diag1 = 1/obs_sigma_t2 + 1/evol_sigma_t2 + c(0, 4/evol_sigma_t2[-(1:2)], 0) + c(1/evol_sigma_t2[-(1:2)], 0, 0)
       diag2 = c(-2/evol_sigma_t2[3], -2*(1/evol_sigma_t2[-(1:2)] + c(1/evol_sigma_t2[-(1:3)],0)))
       diag3 = 1/evol_sigma_t2[-(1:2)]
-      rd = zrnorm(T)
+      rd = RcppZiggurat::zrnorm(T)
       mu = sample_mat_c(loc_obs$r, loc_obs$c, c(diag1, diag2, diag2, diag3, diag3), length(diag1), length(loc_obs$r), c(linht), rd, D)
     }
   }
@@ -482,7 +482,7 @@ t_sampleLogVols = function(h_y, h_prev, h_mu, h_phi, h_phi2, h_sigma_eta_t, h_si
 
   # Sample the log-vols:
   #hsamp = h_mu_all + matrix(Matrix::solve(chQht_Matrix,Matrix::solve(Matrix::t(chQht_Matrix), linht) + rnorm(length(linht))), nr = n)
-  rd = zrnorm(length(linht))
+  rd = RcppZiggurat::zrnorm(length(linht))
   hsamp = h_mu + sample_mat_c(loc$r, loc$c, c(Q_diag, Q_off, Q_off), length(Q_diag), length(loc$r), c(linht), rd, 1)
 
   # Return the (uncentered) log-vols
