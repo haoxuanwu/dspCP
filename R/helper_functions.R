@@ -893,6 +893,8 @@ plot_fitted = function(y, mu, postY, y_true = NULL, t01 = NULL, include_joint_ba
 #' @note The log density function may return -Inf for points outside the support
 #' of the distribution.  If a lower and/or upper bound is specified for the
 #' support, the log density function will not be called outside such limits.
+#'
+#' @export
 uni.slice <- function (x0, g, w=1, m=Inf, lower=-Inf, upper=+Inf, gx0=NULL)
 {
   # Check the validity of the arguments.
